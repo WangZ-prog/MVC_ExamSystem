@@ -1,0 +1,51 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎登录网络在线考试系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+    @Styles.Render("~/css")
+    @Scripts.Render("~/lib/layui")
+    @Scripts.Render("~/js")
+    @Scripts.Render("~/Scripts")
+</head>
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card" style="height: 100px;">
+                    <div class="layui-card-body" style="margin-bottom: -110px; ">
+                        <blockquote class="layui-elem-quote" align="center" style="letter-spacing: 10px;">
+                            欢迎登录网络在线考试系统-学生端
+                        </blockquote>
+                    </div>
+                    <div class="layui-carousel" id="test10" style="margin:auto;">
+                        <div carousel-item="">
+                            <div><img src="~/images/tu1.jpg" style="height: 100%; width: 100%;"></div>
+                            <div><img src="~/images/tu4.jpg" style="height: 100%; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        layui.use(['carousel', 'form'], function () {
+            var carousel = layui.carousel
+                , form = layui.form;
+            
+            //图片轮播
+            carousel.render({
+                elem: '#test10'
+                , width: '98%'
+                , height: '490px'
+                , interval: 2500
+            });
+        });
+    </script>
+</body>
+</html>

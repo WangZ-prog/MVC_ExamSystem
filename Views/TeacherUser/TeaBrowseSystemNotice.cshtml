@@ -1,0 +1,59 @@
+﻿@using ExamSystem.Models.TableModel
+@model System_Stu_Notice
+@{
+    ViewBag.Title = "查看通知";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <div>
+                    <h1 style="text-align: center;"> @Model.NoticeName</h1>
+                </div>
+                <div>
+                    <pre>@Model.NoticeContent</pre>
+                </div>
+            </div>
+            <div class="layui-form-item" style=" margin: auto; margin-left: 19%; margin-top: 75%;">
+                <label for="" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="read" lay-submit style=" width: 55px;">已读</button>
+                <input type="hidden" name="id" value="@Model.id" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(read)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/TeacherUser/UpdateTeacherReadNotice',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.ResultType == 1) {
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    //location.reload();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>
+

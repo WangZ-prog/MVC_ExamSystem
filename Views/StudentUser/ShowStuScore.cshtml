@@ -1,0 +1,40 @@
+﻿@using ExamSystem.Models.TableModel
+@model stuScore
+@{
+    ViewBag.Title = "成绩数据";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid" style=" margin-top: 100px;">
+    <div class="login layui-anim layui-anim-up">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2 style=" text-align: center; font-weight: bold; font-size: 35px; color: cadetblue;">网络在线考试系统学生成绩</h2>
+        </div>
+        <div class="layui-bg-gray" style=" padding: 27px; position: absolute; left: 0; right: 0; background-color: #b6c3b8; margin: auto; margin-top: 30px;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md6" style="color: red; font-size: 20px; width: 100%;">
+                    <div class="layui-panel">
+                        <div style="padding: 50px 0px;">
+                            <table>
+                                <tr>
+                                    <td>
+                                        本次考试试卷：@Model.examName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        本次考试成绩：@Model.isScore
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="position: relative; top: 0; bottom: 0; left: 0; right: 0; margin: auto; margin-top: 250px; margin-left: 554px; ">
+            <div class="layui-input-block">
+                <a class="layui-btn layui-btn-primary" href="/ExamPaper/ExamPaperInfoToStudent" style="width: 373px; background-color: #3a3a38; position: absolute; height: 31px; font-size: 15px; margin-top: 30px; ">返回主页</a>
+            </div>
+        </div>
+    </div>
+</div>

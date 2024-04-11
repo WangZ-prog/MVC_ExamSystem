@@ -1,0 +1,72 @@
+﻿@using ExamSystem.Models.TableModel
+@using ExamSystem.Comm.CommHelper
+@model List<stuScore>
+@{
+    ViewBag.Title = "学生成绩";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="x-nav">
+    <span class="layui-breadcrumb">
+        <a href="">后台首页</a>
+        <a href="">学生管理</a>
+    </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" method="get">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="Keys" placeholder="请输入关键字(学生姓名或试卷名)" autocomplete="off" class="layui-input" style="width: 200px;">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main" style=" width: 80%; margin: auto;">
+                    <table class="layui-table layui-form">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>学生姓名</th>
+                                <th>试卷名</th>
+                                <th>学生成绩</th>
+                                <th>是否重考</th>
+                                <th>考试时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (stuScore stuscore in Model)
+                            {
+                                <tr>
+                                    <td style=" width: 10%;">@stuscore.id</td>
+                                    <td style="width: 12%;">@stuscore.stuName</td>
+                                    <td style="width: 30%;">@stuscore.examName</td>
+                                    <td style="color: red; font-weight: bold; width: 11%;">@stuscore.isScore 分</td>
+                                    <td style="font-weight: bolder; width: 10%;">@stuscore.isRetake</td>
+                                    <td style=" width: 12%;">@stuscore.testTime</td>
+                                </tr>
+                                }
+                            </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div>
+                            @Html.OutPutPage((int)ViewBag.NowSize, (int)ViewBag.PageSize, (int)ViewBag.TotalCount)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

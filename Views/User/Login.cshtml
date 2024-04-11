@@ -1,0 +1,111 @@
+﻿@using ExamSystem.Models.TableModel
+@model AdminUser
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>网络在线考试系统用户登录</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <script type="text/javascript" src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js"></script>
+    <style>
+    </style>
+</head>
+<body class="login-bg">
+    <div class="login layui-anim layui-anim-up">
+        <div class="message">欢迎登录网络在线考试系统</div>
+        <div id="darkbannerwrap"></div>
+        <form id="form" method="post" class="layui-form">
+            <input id="Username" name="Username" placeholder="用户名" type="text" lay-verify="required" class="layui-input">
+            <hr class="hr15">
+            <input id="Password" name="Password" placeholder="密码" type="password" lay-verify="required" class="layui-input">
+            <hr class="hr15">
+            <div>
+                <div class="layui-input-block">
+                    <input class="radius1" type="radio" name="identity" value="0" title="管理员" checked ><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div></div></div>
+                    <input class="radius2" type="radio" name="identity" value="1" title="老师"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div></div></div>
+                    <input class="radius3" type="radio" name="identity" value="2" title="学生"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div></div></div>
+                </div>
+            </div>
+            <input id="ImgCode" name="ImgCode" lay-verify="required" placeholder="验证码" type="text" class="layui-input" style="width:180px;" />
+            <div style="float:right; margin:-35px auto; ">
+                <img style="border-radius:7px; cursor:pointer;height:35px;width:137px;" id="ReloadImg" alt="验证码图片" height="40" onclick="Refresh(this)" src="/User/VerifyCode" title="点击刷新" />
+            </div>
+            <hr class="hr15">
+            <div class="layui-btn-container">
+                <input value="登录" lay-submit lay-filter="login" style="width:98%;float:left" type="submit">
+            </div>
+            <hr class="hr15">
+            <div class="layui-btn-container">
+                <a class="layui-btn layui-btn-primary layui-border-orange" style="width: 98%; float: left; font-size: 18px" href="/User/Register">注册</a>
+            </div>
+            <hr class="hr20">
+        </form>
+    </div>
+    <script>
+        $(function () {
+            layui.use('form', function () {
+                var form = layui.form;
+                var layer = layui.layer;
+                //AJAx POST 请求,监听提交
+                //采用Json格式验证登录
+                form.on('submit(login)', function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/User/Login',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',   //采用Json格式验证登录
+                        success: function (data) {
+                            if (data.ResultType == 1) {
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    //获取身份value的值进行判断再转页面
+                                    var identity = $("input[name='identity']:checked").attr("value");
+                                    if (identity == 0)  //管理员
+                                        window.location.href = "/Home/Index";
+                                    else if(identity == 1)  //老师
+                                        window.location.href = "/TeacherUser/Index";
+                                    else
+                                        window.location.href = "/StudentUser/Index";
+                                });
+                            }
+                            else if (data.ResultType == 2) {
+                                layer.alert(data.Msg, { icon: 2 });
+                                RefreshImg();
+                            }
+                            else {
+                                layer.alert(data.Msg, { icon: 2 });
+                                RefreshImg();
+                            }
+                        },
+                        error: function (err) {
+                            layer.alert("登录失败", { icon: 2 });
+                            RefreshImg();
+                        }
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+            });
+        })
+        function Refresh(obj) {
+            $(obj).attr("src", "/User/VerifyCode?RandNumber=" + Math.random());
+        }
+        function RefreshImg() {
+            $("#ReloadImg").attr("src", "/User/VerifyCode?RandNumber=" + new Date().getTime());
+        }
+    </script>
+</body>
+</html>

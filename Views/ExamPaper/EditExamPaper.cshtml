@@ -1,0 +1,68 @@
+﻿@using ExamSystem.Models.TableModel
+@model ExamPaper
+@{
+    ViewBag.Title = "编辑试卷";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <label for="L_examName" class="layui-form-label">
+                    <span class="x-red">*</span>试卷名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_examName" name="examName" value="@Model.examName" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_examSubject" class="layui-form-label">
+                    <span class="x-red">*</span>试卷学科
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_examSubject" name="examSubject" value="@Model.examSubject" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="edit" lay-submit>编&nbsp;&nbsp;辑</button>
+                <input type="hidden" name="id" value="@Model.id" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(edit)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/ExamPaper/EditExamPaper',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            var sMsg = data.Message;
+                            if (data.ResultType == 1) {
+                                //编辑成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //编辑失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>

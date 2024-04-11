@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "添加题目";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <label for="L_questionName" class="layui-form-label">
+                    <span class="x-red">*</span>试题题目
+                </label>
+                <div class="layui-input-inline" style="width:80%">
+                    <input type="text" id="L_questionName" name="questionName" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionList" class="layui-form-label">
+                    <span class="x-red">*</span>试题选项
+                </label>
+                <div class="layui-input-inline" style="width:80%;background-color:white">
+                    <textarea class="layui-textarea"  id="L_questionList" name="questionList"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionScore" class="layui-form-label">
+                    <span class="x-red">*</span>题目分数
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_questionScore" name="questionScore" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionAnswer" class="layui-form-label">
+                    <span class="x-red">*</span>试题答案
+                </label>
+                <div class="layui-input-inline" style="width: 500px">
+                    <input type="radio" name="questionAnswer" value="A" title="A" checked="">
+                    <input type="radio" name="questionAnswer" value="B" title="B">
+                    <input type="radio" name="questionAnswer" value="C" title="C">
+                    <input type="radio" name="questionAnswer" value="D" title="D">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionSubject" class="layui-form-label">
+                    <span class="x-red">*</span>所属学科
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_questionSubject" name="questionSubject" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionRank" class="layui-form-label">
+                    <span class="x-red">*</span>试题难度
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_questionRank" name="questionRank" class="valid">
+                        <option value="简单">简单</option>
+                        <option value="适中">适中</option>
+                        <option value="较难">较难</option>
+                        <option value="很难">很难</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionStatus" class="layui-form-label">
+                    <span class="x-red">*</span>试题状态
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_questionStatus" name="questionStatus" class="valid">
+                        <option value="1">启用</option>
+                        <option value="0">停用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit>添&nbsp;&nbsp;加</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(add)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/ExamTextQuestion/AddSingleQuestion',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            var sMsg = data.Message;
+                            if (data.ResultType == 1) {
+                                //添加成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //添加失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>
+

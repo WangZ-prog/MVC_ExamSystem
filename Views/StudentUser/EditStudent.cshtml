@@ -1,0 +1,92 @@
+﻿@using ExamSystem.Models.TableModel
+@model StudentUser
+@{
+    ViewBag.Title = "编辑学生";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="L_userName" class="layui-form-label">
+                    <span class="x-red">*</span>学生账号
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" value="@Model.userName" readonly="readonly" id="L_userName" name="userName" required="" lay-verify="userName" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>无法修改,这将会成为您唯一的登录名
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_realName" class="layui-form-label">
+                    <span class="x-red">*</span>学生姓名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" value="@Model.realName" id="L_realName" name="realName" required="" lay-verify="realName" autocomplete="off" class="layui-input">
+                </div>
+            <div class="layui-form-item">
+                <label for="L_telPhone" class="layui-form-label">
+                    <span class="x-red">*</span>电话号码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" value="@Model.telPhone" id="L_telPhone" name="telPhone" required="" lay-verify="telPhone" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>电话号码必须是11位且1开头
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="modify" lay-submit="">编&nbsp;&nbsp;辑</button>
+                <input type="hidden" name="id" value="@Model.id" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //自定义验证规则
+            form.verify({
+                realName: function (value) {
+                    if (value.length < 2) {
+                        return '学生姓名至少得2个字符';
+                    }
+                },
+                telPhone: [/^1[0123456789]\d{9}$/, '电话号码必须是11位'],
+            });
+            //监听提交
+            form.on('submit(modify)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/StudentUser/EditStudent',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.ResultType == 1) {
+                                //编辑成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //编辑失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                        error: function (err) {
+                            layer.alert(data.Msg);
+                        }
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>

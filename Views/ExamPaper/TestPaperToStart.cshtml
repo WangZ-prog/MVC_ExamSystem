@@ -1,0 +1,79 @@
+﻿@using ExamSystem.Models.TableModel
+@model List<Question>
+@{
+    ViewBag.Title = "在线测试";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row" style=" margin-top: 110px;">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2 style=" text-align: center; font-weight: bold; font-size: 35px; color: #302f2f;">网络在线考试系统在线测试</h2>
+        </div>
+        <div class="layui-bg-gray" style="width: 416px; margin-bottom: 20px; padding: 30px; background-color: rgb(0 0 0 / 0%); margin: auto; margin-top: 20px; height: 0px;">
+           <h4 style="font-size: 16px; font-weight: bold; color: red;"> 注意事项：本次随机测试只指定学科，不固定试卷！！！</h4>
+            <h4 style="font-size: 16px; font-weight: bold; color: red;"> 注意事项：固定单选题数：5，判断题数：5，填空题数：5</h4>
+            <h4 style="font-size: 16px; font-weight: bold; color: red;"> 注意事项：总分根据每题题数以及每题分值决定</h4>
+        </div>
+        <form class="layui-form">
+            <div class="layui-form-item" style="margin: auto; margin-left: 535px; margin-top: 60px; ">
+                <label for="L_examSubject" class="layui-form-label">
+                    选择学科
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_questionSubject" name="questionSubject" class="valid">
+                        @foreach (Question question  in Model)
+                        {
+                        <option value="@question.questionSubject">@question.questionSubject</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item" style=" margin: auto; margin-left: 590px; margin-top: 10px;">
+                <label for="L_repass" class="layui-form-label"></label>
+                <button type="submit" class="layui-btn" lay-filter="test" lay-submit>开始测试</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            //监听提交
+            form.on('submit(test)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/ExamPaper/TestPaperToStart',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.ResultType == 1) {
+                                //添加成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    window.location.href = "/ExamPaper/TestPaperAnswer";
+
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //添加失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>
+
+
+

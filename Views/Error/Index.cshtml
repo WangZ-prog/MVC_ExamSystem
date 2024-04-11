@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "错误页面";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-container">
+    <div class="fly-panel">
+        <div class="fly-none">
+            <h2><i class="layui-icon layui-icon-404"></i></h2>
+            <p><a href="/Home/Index" target="_top">点击返回首页</a>&nbsp;&nbsp;错误提示：@Request.QueryString["ErrorMessage"].ToString()</p>
+        </div>
+    </div>
+</div>
+

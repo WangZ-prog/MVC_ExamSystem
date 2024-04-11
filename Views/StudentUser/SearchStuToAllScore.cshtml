@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "成绩查询";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid" style=" margin-top: 100px;">
+    <div class="login layui-anim layui-anim-up">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2 style=" text-align: center; font-weight: bold; font-size: 35px; color: cadetblue;">网络在线考试系统成绩查询</h2>
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form" style=" width: 400px; position: absolute; top: 55px; bottom: 0; left: 0; right: 0; margin: auto;">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="text" id="userName" name="userName" placeholder="查询成绩的学生的登录用户名" required lay-verify="userName" autocomplete="off" class="layui-input" style="height: 40px; font-size: 15px; margin-top: 35px; ">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="password" name="passWord" id="passWord" placeholder="登录密码" lay-verify="realName" autocomplete="off" class="layui-input" style="height: 40px; font-size: 15px; margin-top: -6px; " >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <input type="text" id="ImgCode" name="ImgCode" placeholder="请输入验证码" lay-verify="ImgCode" autocomplete="off" class="layui-input" style="height: 40px; font-size: 15px; margin-top: -6px; ">
+                </div>
+                <div style="float:right; margin:-35px auto; ">
+                    <img style="border-radius: 7px; cursor: pointer; height: 35px; margin-top: 32px; width: 137px;" id="ReloadImg" alt="验证码图片" height="40" onclick="Refresh(this)" src="/User/VerifyCode" title="点击刷新" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="formDemo" style="width: 100%; margin-top: 3px; height: 35px; font-size: 15px; ">查询成绩</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        layui.use('form', function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            //AJAx POST 请求,监听提交
+            //采用Json格式验证登录
+            form.on('submit(formDemo)', function (data) {
+                layer.load(3);
+                $.ajax({
+                    url: '/StudentUser/SearchStuToAllScore',
+                    type: 'post',
+                    data: data.field,
+                    dataType: 'json',   //采用Json格式验证登录
+                    success: function (data) {
+                        if (data.ResultType == 1) {
+                            layer.alert(data.Msg, { icon: 6 }, function () {
+                                window.location.href = "/StudentUser/ShowStuALLScore";
+                            });
+                        }
+                        else if (data.ResultType == 2) {
+                            layer.alert(data.Msg, { icon: 2 });
+                            RefreshImg();
+                        }
+                        else {
+                            layer.alert(data.Msg, { icon: 2 });
+                            RefreshImg();
+                        }
+                    },
+                    error: function (err) {
+                        layer.alert("查询失败", { icon: 2 });
+                        RefreshImg();
+                    }
+                });
+                layer.closeAll("loading");
+                return false;
+            });
+        });
+    })
+    function Refresh(obj) {
+        $(obj).attr("src", "/User/VerifyCode?RandNumber=" + Math.random());
+    }
+    function RefreshImg() {
+        $("#ReloadImg").attr("src", "/User/VerifyCode?RandNumber=" + new Date().getTime());
+    }
+</script>

@@ -1,0 +1,111 @@
+﻿@using ExamSystem.Models.TableModel
+@model List<TeacherUser>
+@{
+    ViewBag.Title = "老师信息";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right; height: 30px;" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid layadmin-maillist-fluid" style="position: relative; margin-top: 8px; ">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" style="margin: -6.5px;">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="Keys" placeholder="请输入关键字(老师姓名)" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach" style="margin-top: 3px; float: right; height: 30px;"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 112%; min-height: 50%; display: flex; flex-wrap: wrap;">
+        @foreach (TeacherUser teacherUser in Model)
+        {
+            string Id = teacherUser.id.ToString();
+            int isJoin = teacherUser.isJoin;
+            <div class="layui-bg-gray" style="background-color: #ffffff; height: 150px; width: 20%;">
+                <div class="layadmin-text-center">
+                    <img src="~/images/character.png" style=" width: 100px;">
+                </div>
+                <div class="layui-row layui-col-space15" style="position:relative;">
+                    <div class="layui-col-md6">
+                        <div class="layui-panel" style="padding: 10px 4px 33px 4px;width:1000px;">
+                            <div><span class="layui-badge-dot layui-bg-orange"></span> <span class="layui-badge-rim">老师姓名</span> @teacherUser.realName</div>
+                            <div><span class="layui-badge-dot layui-bg-blue"></span> <span class="layui-badge-rim">联系方式</span> @teacherUser.telPhone</div>
+                        </div>
+                    </div>
+                    <div class="layui-btn-container" style="position: absolute; right: 0px; bottom: 63px;">
+                        @if (isJoin == 0)
+                        {
+                            <button class="btn-flex layui-btn layui-btn-radius layui-btn-sm" lay-filter="formDemo" type="button" id="formDemo" lay-submit="" onclick="member_join(this, '@Id')" style="border-radius: 10px;">加入老师</button>
+                            <button class="btn-flex layui-btn layui-btn-radius layui-btn-disabled" type="button" style="border-radius: 10px;">退出</button>
+                        }
+                        else if (isJoin == 1)
+                        {
+                            <button class="btn-flex layui-btn layui-btn-radius layui-btn-disabled" type="button" style="border-radius: 10px;">已加入</button>
+                            <button class="btn-flex layui-btn layui-btn-radius layui-btn-danger layui-btn-sm"  type="button"  onclick="member_quit(this, '@Id')" style="border-radius: 10px;">退出</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script>
+    function member_join(obj, id) {
+        layer.confirm('确认要加入此老师吗？', {icon: 0}, function (index) {
+            $.ajax({
+                url: '/StudentUser/StudentJoinTeacher?id=' + id,
+                type: 'get',
+                data: index.filed,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ResultType == 1) {
+                        layer.alert(data.Msg, { icon: 6 }, function () {
+                            location.reload();
+                    });
+                    }
+                    else if (data.ResultType == 3) {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                    else {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                },
+            });
+        });
+    }
+    function member_quit(obj, id) {
+        layer.confirm('确认要退出吗？会消除所有试卷成绩和通知信息！', {icon: 3}, function (index) {
+            $.ajax({
+                url: '/StudentUser/StudentQuitTeacher?id=' + id,
+                type: 'post',
+                data: index.filed,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ResultType == 1) {
+                        layer.alert(data.Msg, { icon: 6 }, function () {
+                            location.reload();
+                        });
+                    }
+                    else if (data.ResultType == 3) {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                    else {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                },
+            });
+        });
+    }
+</script>
+
+

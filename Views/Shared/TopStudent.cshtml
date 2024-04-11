@@ -1,0 +1,101 @@
+﻿@using ExamSystem.Models.TableModel
+<div class="container">
+    <div class="logo">
+        <a href="/StudentUser/Index">网络在线考试管理系统</a>
+    </div>
+    <ul class="layui-nav left">
+        <li class="layui-nav-item "><a href="/StudentUser/Index">首页</a></li>
+        <li class="layui-nav-item">
+            <a href="/StudentUser/TeacherInfo" target="target">老师信息</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">试卷信息</a>
+            <dl class="layui-nav-child">
+                <dd> <a href="/ExamPaper/ExamPaperInfoToStudent" target="target">我的试卷</a></dd>
+                <dd><a href="/ExamPaper/Completed_ExamPapersToStudent" target="target">已答试卷</a></dd>
+            </dl>
+
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">在线练习</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/ExamPaper/TestPaperToStart" target="target">在线测试</a></dd>
+                <dd><a href="/StudentUser/StudentBrowseTest" target="target">练习记录</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">成绩信息</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/StudentUser/SearchStuToAllScore" target="target">成绩查询</a></dd>
+                @*<dd><a href="/StudentUser/Statistic_RankStudent" target="target">排名统计</a></dd>*@
+            </dl>
+        </li>
+    </ul>
+    <ul class="layui-nav right" lay-filter="">
+        <li class="layui-nav-item">
+            <a href="/StudentUser/SystemPublicNoticeToStu" target="target">系统通告<span class="layui-badge-dot layui-bg-red"  style=" top: 47%; height: 12px; width: 12px;"></span></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="/StudentUser/TeacherNoitce" target="target">教师通知<span class="layui-badge-dot layui-bg-green" style=" top: 47%; height: 12px; width: 12px;"></span></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                @{
+                    if (!(Session["LoginUser"] is null))
+                    {
+                        StudentUser studentUser = Session["LoginUser"] as StudentUser;
+                        @studentUser.userName;
+                    }
+                }
+            </a>
+            <dl class="layui-nav-child">
+                <!-- 二级菜单 -->
+                <dd>
+                    <a onclick="xadmin.open(' 修改信息','/StudentUser/AccountInfo',600,360)">修改信息</a>
+                </dd>
+                <dd>
+                    <a onclick="xadmin.open(' 修改密码','/StudentUser/AccountPass',600,300)">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="/AdminUser/Logout" class="close-all" data-type="closeall">退出</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+<script>
+    layui.use('element', function () {
+        var $ = layui.jquery;
+        var element = layui.element;//Tab的切换功能，切换事件监听等，需要依赖element模块
+        var layer = layui.layer;
+
+
+        //监听导航点击
+        element.on('nav(demo)', function (elem) {
+            //console.log(elem)
+            layer.msg(elem.text());
+        });
+
+
+        var active = {
+            //在这里给active绑定事件，后面可通过active调用这些事件
+            tabDeleteAll: function (ids) {//删除所有
+                $.each(ids, function (i, item) {
+                    element.tabDelete("xbs_tab", item);//ids是一个数组，里面存放了多个id，调用tabDelete方法分别删除
+                })
+            }
+        };
+
+        $(".close-all").click(function () {
+            if ($(this).attr("data-type") == "closeall") {
+                var tabtitle = $(".layui-tab-title li");
+                var ids = new Array();
+                $.each(tabtitle, function (i) {
+                    ids[i] = $(this).attr("lay-id");
+                });
+                active.tabDeleteAll(ids);
+            }
+
+        })
+    });
+</script>

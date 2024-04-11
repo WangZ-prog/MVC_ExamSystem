@@ -1,0 +1,93 @@
+﻿@using ExamSystem.Models.TableModel
+@using ExamSystem.Comm.CommHelper
+@model List<ExamPaper>
+@{
+    ViewBag.Title = "试卷信息";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="x-nav">
+    <span class="layui-breadcrumb">
+        <a href="">后台首页</a>
+        <a href="">试卷管理</a>
+    </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="Keys" placeholder="请输入关键字(卷名或学科)" autocomplete="off" class="layui-input" style="width: 200px;">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-disabled" ></i>批量删除</button>
+                    <button class="layui-btn layui-btn-disabled"><i class="layui-icon"></i>添加</button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>试卷名称</th>
+                                <th>试卷老师</th>
+                                <th>试卷科目</th>
+                                <th>单选数量</th>
+                                <th>判断数量</th>
+                                <th>填空数量</th>
+                                <th>创建时间</th>
+                                <th>试卷状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ExamPaper examPaper in Model)
+                            {
+                                string Id = examPaper.id.ToString();
+                                int isPaperStatus = examPaper.examStatus;
+                                <tr>
+                                    <td>@Id</td>
+                                    <td>@examPaper.examName</td>
+                                    <td>@examPaper.teacherName</td>
+                                    <td>@examPaper.examSubject</td>
+                                    <td>@examPaper.SinglePNum</td>
+                                    <td>@examPaper.JudgePNum</td>
+                                    <td>@examPaper.FillPNum</td>
+                                    <td>@examPaper.examCreateTime</td>
+                                    <td class="td-status">
+                                        @if (isPaperStatus == 1)
+                                        {
+                                            <span class="layui-btn layui-btn-normal layui-btn-mini">已启用</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="layui-btn layui-btn-disabled layui-btn-mini">已停用</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div>
+                            @Html.OutPutPage((int)ViewBag.NowSize, (int)ViewBag.PageSize, (int)ViewBag.TotalCount)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+</script>
+
+

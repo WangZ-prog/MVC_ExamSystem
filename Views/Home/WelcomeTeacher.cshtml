@@ -1,0 +1,80 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎登录网络在线考试系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+    @Styles.Render("~/css")
+    @Scripts.Render("~/lib/layui")
+    @Scripts.Render("~/js")
+    @Scripts.Render("~/Scripts")
+</head>
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-body ">
+                        <blockquote class="layui-elem-quote" align="center" style="text-align: center; letter-spacing: 10px;">
+                            欢迎登录网络在线考试系统-教师端
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">数据统计</div>
+                    <div class="layui-card-body ">
+                        <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                            <li class="layui-col-md2 layui-col-xs6 " style="width: 50%; ">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>我的学生数量</h3>
+                                    <p>
+                                        <cite>@ViewBag.Students</cite>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6" style="width: 50%; ">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>我的试卷数量</h3>
+                                    <p>
+                                        <cite>@ViewBag.ExamPapers</cite>
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="layui-card-body ">
+                        <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                            <li class="layui-col-md2 layui-col-xs6 " style="width: 50%;">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>整个题库数量</h3>
+                                    <p>
+                                        <cite>@ViewBag.ExamTextQuests</cite>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="layui-col-md2 layui-col-xs6" style="width: 50%; ">
+                                <a href="javascript:;" class="x-admin-backlog-body">
+                                    <h3>我的通知数量</h3>
+                                    <p>
+                                        <cite>@ViewBag.Notices</cite>
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <style id="welcome_style"></style>
+            <div class="layui-col-md12" align="center" style="text-align: center; position: fixed; bottom: 0; background-color: #ffffff; width: 98%; font-weight: bold; ">
+                <blockquote class="layui-elem-quote layui-quote-nm" style="font-size: 18px; background-color: #f2f2f2; ">&copy; @DateTime.Now.Year -网络在线考试管理系统</blockquote>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

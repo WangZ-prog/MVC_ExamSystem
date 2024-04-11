@@ -1,0 +1,67 @@
+﻿@using ExamSystem.Models.TableModel
+@model System_Stu_Notice
+@{
+    ViewBag.Title = "编辑通告";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <label for="L_NoticeName" class="layui-form-label">
+                    <span class="x-red">*</span>通告名称
+                </label>
+                <div class="layui-input-inline" style="width:80%">
+                    <input type="text" id="L_NoticeName" name="NoticeName" value="@Model.NoticeName" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_NoticeContent" class="layui-form-label">
+                    <span class="x-red">*</span>通告内容
+                </label>
+                <div class="layui-input-inline" style="width:80%;background-color:white">
+                    <textarea class="layui-textarea" style="white-space: pre-line;" id="L_NoticeContent" name="NoticeContent">@Model.NoticeContent</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="edit" lay-submit>重新发布</button>
+                <input type="hidden" name="id" value="@Model.id" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(edit)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/System_Stu_Notice/EditSystemNotice',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.ResultType == 1) {
+                                //编辑成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //编辑失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>

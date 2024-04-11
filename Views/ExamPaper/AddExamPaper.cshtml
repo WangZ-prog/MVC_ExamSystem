@@ -1,0 +1,121 @@
+﻿@using ExamSystem.Models.TableModel
+@model List<Question>
+@{
+    ViewBag.Title = "添加试卷";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <label for="L_examName" class="layui-form-label">
+                    <span class="x-red">*</span>试卷名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_examName" name="examName" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_examSubject" class="layui-form-label">
+                    <span class="x-red">*</span>试卷学科
+                </label>
+                <div class="layui-input-inline">
+                    @*<input type="text" id="L_examSubject" name="examSubject" required="" lay-verify="" autocomplete="off" class="layui-input">*@
+                    <select id="L_examSubject" name="examSubject" class="valid">
+                        @foreach (Question question in Model)
+                        {
+                            <option value="@question.questionSubject">@question.questionSubject</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_SinglePNum" class="layui-form-label">
+                    <span class="x-red">*</span>单选题目数量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_SinglePNum" name="SinglePNum" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>每一题分值由试题决定
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_JudgePNum" class="layui-form-label">
+                    <span class="x-red">*</span>判断题目数量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_JudgePNum" name="JudgePNum" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>每一题分值由试题决定
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_FillPNum" class="layui-form-label">
+                    <span class="x-red">*</span>填空题目数量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_FillPNum" name="FillPNum" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>每一题分值由试题决定
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_examStatus" class="layui-form-label">
+                    <span class="x-red">*</span>试卷状态
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_examStatus" name="examStatus" class="valid">
+                        <option value="1">启用</option>
+                        <option value="0">停用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-filter="add" lay-submit>添&nbsp;&nbsp;加</button>
+                    @*<button type="reset" class="layui-btn layui-btn-primary">重置</button>*@
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(add)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/ExamPaper/AddExamPaper',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            var sMsg = data.Message;
+                            if (data.ResultType == 1) {
+                                //添加成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //添加失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>
+

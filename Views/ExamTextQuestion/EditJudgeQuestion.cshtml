@@ -1,0 +1,111 @@
+﻿@using ExamSystem.Models.TableModel
+@model Question
+@{
+    ViewBag.Title = "编辑试题";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <label for="L_questionName" class="layui-form-label">
+                    <span class="x-red">*</span>试题题目
+                </label>
+                <div class="layui-input-inline" style="width:80%">
+                    <input type="text" id="L_questionName" name="questionName" value="@Model.questionName" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionAnswer" class="layui-form-label">
+                    <span class="x-red">*</span>试题答案
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_questionAnswer" name="questionAnswer" class="valid">
+                        <option value="对">对</option>
+                        <option value="错">错</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionScore" class="layui-form-label">
+                    <span class="x-red">*</span>题目分数
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_questionScore" name="questionScore" value="@Model.questionScore" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionSubject" class="layui-form-label">
+                    <span class="x-red">*</span>所属学科
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_questionSubject" name="questionSubject" value="@Model.questionSubject" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionRank" class="layui-form-label">
+                    <span class="x-red">*</span>试题难度
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_questionRank" name="questionRank" class="valid">
+                        <option value="简单">简单</option>
+                        <option value="适中">适中</option>
+                        <option value="较难">较难</option>
+                        <option value="很难">很难</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_questionStatus" class="layui-form-label">
+                    <span class="x-red">*</span>试题状态
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_questionStatus" name="questionStatus" class="valid">
+                        <option value="1">启用</option>
+                        <option value="0">停用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="edit" lay-submit>编&nbsp;&nbsp;辑</button>
+                <input type="hidden" name="id" value="@Model.id" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(edit)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/ExamTextQuestion/EditJudgeQuestion',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            var sMsg = data.Message;
+                            if (data.ResultType == 1) {
+                                //编辑成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //编辑失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>

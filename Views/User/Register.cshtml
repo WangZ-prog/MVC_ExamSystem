@@ -1,0 +1,113 @@
+﻿@using ExamSystem.Models.TableModel
+@model AdminUser
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>网络在线考试系统用户注册</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="~/Layuiadmin/login.css" media="all">
+    <link rel="stylesheet" href="~/Layuiadmin/layui.css" media="all">
+    <link rel="stylesheet" href="~/Layuiadmin/admin.css" media="all">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <script type="text/javascript" src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js"></script>
+</head>
+<body class="login-bg">
+    <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+        <div class="login layui-anim layui-anim-up">
+            <div class="layadmin-user-login-box layadmin-user-login-header">
+                <h2 style="font-weight:bold; color:cadetblue">网络在线考试系统</h2>
+                <p style="font-weight:bold; font-size:20px">用户注册</p>
+            </div>
+            <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+                <div class="layui-form-item">
+                    <input type="text" name="userName" id="userName" lay-verify="userName" placeholder="注册账号" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <input type="password" name="passWord" id="passWord" lay-verify="passWord" placeholder="设置密码" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <input type="password" name="repassWord" id="repassWord" lay-verify="repassWord" placeholder="确认密码" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <input type="text" name="realName" id="realName" lay-verify="realName" placeholder="真实姓名" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <input type="text" name="telPhone" id="telPhone" lay-verify="telPhone" placeholder="电话号码" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <select id="identity" name="identity" class="valid">
+                            <option value="1">教师</option>
+                            <option value="2">学生</option>
+                        </select>
+                    </div>
+                </div>
+                <input id="ImgCode" name="ImgCode" lay-verify="ImgCode" placeholder="验证码" type="text" class="layui-input" style="width: 50%;" />
+                <div style="float:right; margin:-35px auto; ">
+                    <img style="border-radius:7px; cursor:pointer;height:35px;width:137px;" id="ReloadImg" alt="验证码图片" height="40" onclick="Refresh(this)" src="/User/VerifyCode" title="点击刷新" />
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn layui-btn-fluid" type="submit" lay-submit lay-filter="register">注 册</button>
+                </div>
+                <div class="layui-trans layui-form-item layadmin-user-login-other">
+                    <a href="/User/Login" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            layui.use('form', function () {
+                var form = layui.form;
+                var layer = layui.layer;
+                //AJAx POST 请求,监听提交
+                //采用Json格式验证登录
+                form.on('submit(register)', function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/User/Register',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',   //采用Json格式验证登录
+                        success: function (data) {
+                            if (data.ResultType == 1) {
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                        window.location.href = "/User/Login";
+                                });
+                            }
+                            else if (data.ResultType == 2) {
+                                layer.alert(data.Msg, { icon: 2 });
+                                RefreshImg();
+                            }
+                            else {
+                                layer.alert(data.Msg, { icon: 2 });
+                                RefreshImg();
+                            }
+                        },
+                        error: function (err) {
+                            layer.alert("注册失败", { icon: 2 });
+                            RefreshImg();
+                        }
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+            });
+        })
+        function Refresh(obj) {
+            $(obj).attr("src", "/User/VerifyCode?RandNumber=" + Math.random());
+        }
+        function RefreshImg() {
+            $("#ReloadImg").attr("src", "/User/VerifyCode?RandNumber=" + new Date().getTime());
+        }
+    </script>
+</body>
+</html>

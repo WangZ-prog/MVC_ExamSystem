@@ -1,0 +1,89 @@
+﻿@using ExamSystem.Models.TableModel
+@model StudentUser
+@{
+    ViewBag.Title = "编辑密码";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="L_userName" class="layui-form-label">
+                    <span class="x-red">*</span>用户账号
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" value="@Model.userName" readonly="readonly" id="L_userName" name="userName" required="" lay-verify="userName" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>无法修改,这将会成为您唯一的登录名
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_passWord" class="layui-form-label">
+                    <span class="x-red">*</span>新密码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_passWord" name="passWord" required="" lay-verify="passWord" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>请输入6-12位密码
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repassWord" class="layui-form-label">
+                    <span class="x-red">*</span>确认新密码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_repassWord" name="repassWord" required="" lay-verify="repassWord" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="modify" lay-submit="">编辑密码</button>
+                <input type="hidden" name="id" value="@Model.id" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            //自定义验证规则
+            form.verify({
+            passWord: [/(.+){6,12}$/, '密码必须6到12位'],
+                repassWord: function (value) {
+                    if ($('#L_passWord').val() != $('#L_repassWord').val()) {
+                        return '两次密码不一致';
+                    }
+                }
+        });
+    //监听提交
+    form.on('submit(modify)',
+        function (data) {
+            layer.load(3);
+            $.ajax({
+                url: '/StudentUser/EditStudentPass',
+                type: 'post',
+                data: data.field,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ResultType == 1) {
+                        //修改成功
+                        layer.alert(data.Msg, { icon: 6 }, function () {
+                            xadmin.close();
+                            xadmin.father_reload();
+                        });
+                    }
+                    else if (data.ResultType == 3) {
+                        //修改失败
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                },
+            });
+            layer.closeAll("loading");
+            return false;
+        });
+     });
+</script>

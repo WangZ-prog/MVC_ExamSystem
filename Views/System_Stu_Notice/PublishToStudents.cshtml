@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "发布通知";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" lay-filter="dataFrm">
+            <div class="layui-form-item">
+                <label for="L_NoticeName" class="layui-form-label">
+                    <span class="x-red">*</span>通知名称
+                </label>
+                <div class="layui-input-inline" style="width:80%">
+                    <input type="text" id="L_NoticeName" name="NoticeName" required="" lay-verify="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_NoticeContent" class="layui-form-label">
+                    <span class="x-red">*</span>通知内容
+                </label>
+                <div class="layui-input-inline" style="width:80%;background-color:white">
+                    <textarea class="layui-textarea" style="white-space: pre-line;" id="L_NoticeContent" name="NoticeContent"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit>发布通知</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //监听提交
+            form.on('submit(add)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/System_Stu_Notice/PublishToStudents',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            var sMsg = data.Message;
+                            if (data.ResultType == 1) {
+                                //添加成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //添加失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>
+

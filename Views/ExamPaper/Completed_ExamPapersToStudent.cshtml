@@ -1,0 +1,96 @@
+﻿@using ExamSystem.Models.TableModel
+@model List<ExamPaper>
+@{
+    ViewBag.Title = "试卷信息";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="x-nav">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="Keys" placeholder="请输入关键字(卷名)" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="width: 106%; min-height: 50%; display: flex; flex-wrap: wrap;">
+    @foreach (ExamPaper examPaper in Model)
+    {
+        string id = examPaper.id.ToString();
+        string retake = examPaper.isretake;
+        <div class="layui-bg-gray">
+            <div class="layui-row layui-col-space15" style="position:relative;">
+                <div class="layui-col-md6">
+                    <div class="layui-panel" style="padding: 10px 4px 3px 4px;">
+                        <div style="font-size: 20px; margin-top: 12px; width: 330px; margin-bottom: 10px;">@examPaper.examName</div>
+                        <div><span class="layui-badge-dot"></span> <span class="layui-badge-rim"style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">试卷教师</span> @examPaper.teacherName</div>
+                        <div><span class="layui-badge-dot layui-bg-orange"></span> <span class="layui-badge-rim" style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">单选题数</span> @examPaper.SinglePNum</div>
+                        <div><span class="layui-badge-dot layui-bg-green"></span> <span class="layui-badge-rim"style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">判断题数</span> @examPaper.JudgePNum</div>
+                        <div><span class="layui-badge-dot layui-bg-black"></span> <span class="layui-badge-rim"style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">填空题数</span> @examPaper.FillPNum</div>
+                    </div>
+                </div>
+                <div class="layui-btn-container" style="position:absolute; right:10px;bottom:30px;">
+                    <button type="button" class="layui-btn layui-btn-disabled" style=" background-color: #c5c4c4; border-radius: 4px; color: #575151; border-color: #858585;">已完成</button>
+                    @if (retake == "是")
+                    {
+                        <button type="button" class="layui-btn layui-btn-disabled" style=" background-color: #363333; border-color: black;">已重考</button>
+                    }
+                    else if (retake == "否")
+                    {
+                        <button type="button" class="layui-btn" onclick="renew_exam(this,'@id')" style="background-color: #eb5a5a;">重考</button>
+                    }
+                    <button type="button" class="layui-btn" onclick="look_exam(this,'@id')" style="background-color: #4b7497;">浏览试卷</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    //重考
+    function renew_exam(obj, id) {
+        layer.confirm('确定重考吗？会覆盖之前的成绩？？？', {icon: 0}, function (index) {
+            //发送请求get
+            $.ajax({
+                url: '/ExamPaper/MakeSureToReStartExam?id=' + id,
+                type: 'get',
+                data: index.field,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ResultType == 1) {
+                        layer.alert(data.Msg, { icon: 1, time: 2500 },
+                                function () {
+                                    window.location.href = "/ExamPaper/ReStartAnswerExamPaper?id=" + id;
+                                }
+                            );
+                    }
+                    else if (data.ResultType == 3) {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                    else {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                },
+            });
+        });
+    }
+    //浏览试卷
+    function look_exam(obj, id) {
+        layer.confirm('确定浏览？未重考的将会失去重考资格！', { icon: 0 }, function (index) {
+            window.location.href = "/ExamPaper/StudentBrowseExam?id=" + id;
+        });
+    }
+</script>

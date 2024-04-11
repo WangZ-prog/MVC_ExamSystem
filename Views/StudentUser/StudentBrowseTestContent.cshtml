@@ -1,0 +1,130 @@
+﻿@using ExamSystem.Models.TableModel
+@model  TestPaper
+@{
+    ViewBag.Title = "查看测试卷";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+    var SingleProblem = (List<Question>)ViewBag.SingleProblem;
+    var JudgeProblem = (List<Question>)ViewBag.JudgeProblem;
+    var FillProblem = (List<Question>)ViewBag.FillProblem;
+    var i = 0;
+    var m = 0;
+    var n = 0;
+}
+<div class="layui-fluid" style="width: 90%; padding-bottom: 50px;">
+    <fieldset class="layui-elem-field" style="background-color: #5fb7b838; width: 99%">
+        <legend>试卷说明</legend>
+        <div class="layui-field-box">
+            <div style="text-align:center;font-size:25px;">
+                <label>测试学科：@Model.testSubject</label>
+            </div>
+            <div style="text-align:center;">
+                <label style="margin-top: 20px;font-size: 14px;display: inline-block;color:rgba(102, 102, 102, 1);margin-left: 32px">单选题数：5</label>
+                <label style="margin-top: 20px;font-size: 14px;display: inline-block;color:rgba(102, 102, 102, 1);margin-left: 32px">判断题数：5</label>
+                <label style="margin-top: 20px;font-size: 14px;display: inline-block;color:rgba(102, 102, 102, 1);margin-left: 32px">填空题数：5</label>
+                <label style="margin-top: 20px;font-size: 14px;display: inline-block;color:red;margin-left: 32px">测试总分：@Model.totalScore</label>
+                <label style="margin-top: 20px;font-size: 14px;display: inline-block;color:red;margin-left: 32px">学生得分：@Model.stuScore</label>
+            </div>
+        </div>
+    </fieldset>
+    <hr style="height: 2px; background-color: cadetblue; width: 99%">
+    <blockquote class="layui-elem-quote" style="border-left: 5px solid #9dc08d; font-size: 18px; padding: 7px; margin-top: 10px; background-color: #e4e3e3; width: 97.5%; ">
+        一、单选题 (5 个)
+    </blockquote>
+    @foreach (var item in SingleProblem)
+    {
+        string questionAnswer = item.questionAnswer;
+        string stuAnswer = item.stu_answer;
+        i++;
+<div style="position: relative; background-color: #e9e8e8; width: 99%; font-size: 14px; ">
+    <label style="display: block;font-weight: bold;margin-top: 28px">@i、@item.questionName ( ) [ @SingleProblem[i-1].questionScore 分 ]</label>
+    <label style="white-space: pre-line; display: block; margin-top: 15px; font-size: 14px">@item.questionList</label>
+    <form class="layui-form" action="" style="position: absolute;right: 15px;top: 0">
+    </form>
+    @if (questionAnswer == stuAnswer)
+    {
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: darkseagreen; font-weight: bold;">参考答案：@item.questionAnswer</label>
+        </div>
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: darkseagreen; font-weight: bold;">学生答案：@item.stu_answer</label>
+        </div>
+    }
+    else
+    {
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: rgb(255 0 0); font-weight: bold;">参考答案：@item.questionAnswer</label>
+        </div>
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: rgb(255 0 0); font-weight: bold;">学生答案：@item.stu_answer</label>
+        </div>
+    }
+
+</div>
+    }
+    <hr style="height: 2px; background-color: cadetblue; width: 99% ">
+    <blockquote class="layui-elem-quote" style="border-left: 5px solid #9dc08d; font-size: 18px; padding: 7px; margin-top: 10px; background-color: #e4e3e3; width: 97.5%; ">
+        二、判断题 (5 个)
+    </blockquote>
+    @foreach (var item in JudgeProblem)
+    {
+        string questionAnswer = item.questionAnswer;
+        string stuAnswer = item.stu_answer;
+        m++;
+<div style="position: relative; background-color: #e9e8e8; width: 99%; font-size: 14px; ">
+    <label style="display: block;font-weight: bold;margin-top: 28px">@m、@item.questionName [ @JudgeProblem[m-1].questionScore 分 ]</label>
+    @if (questionAnswer == stuAnswer)
+    {
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: darkseagreen; font-weight: bold;">参考答案：@item.questionAnswer</label>
+        </div>
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: darkseagreen; font-weight: bold;">学生答案：@item.stu_answer</label>
+        </div>
+    }
+    else
+    {
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: rgb(255 0 0); font-weight: bold;">参考答案：@item.questionAnswer</label>
+        </div>
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: rgb(255 0 0); font-weight: bold;">学生答案：@item.stu_answer</label>
+        </div>
+    }
+</div>
+    }
+
+    <hr style="height: 2px; background-color: cadetblue; width: 99% ">
+    <blockquote class="layui-elem-quote" style="border-left: 5px solid #9dc08d; font-size: 18px; padding: 7px; margin-top: 10px; background-color: #e4e3e3; width: 97.5%; ">
+        三、填空题 (5 个)
+    </blockquote>
+    @foreach (var item in FillProblem)
+    {
+        string questionAnswer = item.questionAnswer;
+        string stuAnswer = item.stu_answer;
+        n++;
+<div style="position: relative; background-color: #e9e8e8; width: 99%; font-size: 14px; ">
+    <label style="display: block;font-weight: bold;margin-top: 28px">@n、@item.questionName [ @FillProblem[n - 1].questionScore 分 ]</label>
+    @if (questionAnswer == stuAnswer)
+    {
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: darkseagreen; font-weight: bold;">参考答案：@item.questionAnswer</label>
+        </div>
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: darkseagreen; font-weight: bold;">学生答案：@item.stu_answer</label>
+        </div>
+    }
+    else
+    {
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: rgb(255 0 0); font-weight: bold;">参考答案：@item.questionAnswer</label>
+        </div>
+        <div style="width: 100%;height: 40px;background-color: rgba(245, 245, 245, 1);margin-top: 10px">
+            <label style="display: block; line-height: 40px; margin-left: 10px; color: rgb(255 0 0); font-weight: bold;">学生答案：@item.stu_answer</label>
+        </div>
+    }
+</div>
+    }
+    <div style="text-align: center; height: 50px; width: 89%; position: fixed; bottom: 0; background-color: #ffffff; text-align: center;">
+        <button type="button" class="layui-btn layui-btn-warm layui-btn-radius" style="margin-top: 13px; border-radius: 5px;" onclick="window.location.href='/StudentUser/StudentBrowseTest'">返回</button>
+    </div>
+</div>

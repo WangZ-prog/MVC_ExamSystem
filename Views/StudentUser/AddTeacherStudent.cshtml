@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "添加我的学生";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="L_userName" class="layui-form-label">
+                    <span class="x-red">*</span>学生账号
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_userName" name="userName" required="" lay-verify="userName" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>这将会成为您唯一的登录名
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_realName" class="layui-form-label">
+                    <span class="x-red">*</span>学生姓名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_realName" name="realName" required="" lay-verify="realName" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_telPhone" class="layui-form-label">
+                    <span class="x-red">*</span>电话号码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_telPhone" name="telPhone" required="" lay-verify="telPhone" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>电话号码必须是11位且1开头
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_studentStatus" class="layui-form-label">
+                    <span class="x-red">*</span>学生状态
+                </label>
+                <div class="layui-input-inline">
+                    <select id="L_studentStatus" name="studentStatus" class="valid">
+                        <option value="1">启用</option>
+                        <option value="0">停用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_passWord" class="layui-form-label">
+                    <span class="x-red">*</span>密码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_passWord" name="passWord" required="" lay-verify="passWord" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>请输入6-12位密码
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repassWord" class="layui-form-label">
+                    <span class="x-red">*</span>确认密码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_repassWord" name="repassWord" required="" lay-verify="repassWord" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">增&nbsp;&nbsp;加</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //自定义验证规则
+            form.verify({
+                userName: function (value) {
+                    if (value.length < 4 || value.length > 14) {
+                        return '登录账号必须在4-14个字符之间';
+                    }
+                },
+                realName: function (value) {
+                    if (value.length < 2) {
+                        return '学生姓名至少得2个字符';
+                    }
+                },
+                telPhone: [/^1[0123456789]\d{9}$/, '电话号码必须是11位'],
+                passWord: [/(.+){6,12}$/, '密码必须6到12位'],
+                repassWord: function (value) {
+                    if ($('#L_passWord').val() != $('#L_repassWord').val()) {
+                        return '两次密码不一致';
+                    }
+                }
+            });
+            //监听提交
+            form.on('submit(add)',
+                function (data) {
+                    layer.load(3);
+                    $.ajax({
+                        url: '/StudentUser/AddTeacherStudent',
+                        type: 'post',
+                        data: data.field,
+                        dataType: 'json',
+                        success: function (data) {
+                            var sMsg = data.Message;
+                            if (data.ResultType == 1) {
+                                //添加成功
+                                layer.alert(data.Msg, { icon: 6 }, function () {
+                                    xadmin.close();
+                                    xadmin.father_reload();
+                                });
+                            }
+                            else if (data.ResultType == 3) {
+                                //添加失败
+                                layer.alert(data.Msg, { icon: 2 });
+                            }
+                        },
+                    });
+                    layer.closeAll("loading");
+                    return false;
+                });
+        });
+</script>
+

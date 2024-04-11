@@ -1,0 +1,64 @@
+﻿@using ExamSystem.Models.TableModel
+<div class="container">
+    <div class="logo">
+        <a href="/TeacherUser/Index">网络在线考试管理系统</a>
+    </div>
+    <div class="left_open">
+        <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
+    </div>
+    <ul class="layui-nav right" lay-filter="">
+        <li class="layui-nav-item">
+            <a onclick="xadmin.open('系统通告','/TeacherUser/SystemPublicNoticeToTeacher',1000,600)" >系统通告<span class="layui-badge-dot layui-bg-red" style=" top: 53%; height: 12px; width: 12px;"></span></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                @{
+                    if (!(Session["LoginUser"] is null))
+                    {
+                        TeacherUser teacherUser = Session["LoginUser"] as TeacherUser;
+                        @teacherUser.userName;
+                    }
+                }
+            </a>
+            <dl class="layui-nav-child">
+                <!-- 二级菜单 -->
+                <dd>
+                    <a onclick="xadmin.open(' 修改信息','/TeacherUser/AccountInfo',600,360)">修改信息</a>
+                </dd>
+                <dd>
+                    <a onclick="xadmin.open(' 修改密码','/TeacherUser/AccountPass',600,300)">修改密码</a>
+                </dd>
+                <dd>
+                    <a href="/AdminUser/Logout" class="close-all" data-type="closeall">退出</a>
+                </dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+<script>
+    layui.use('element', function () {
+        var $ = layui.jquery;
+        var element = layui.element;//Tab的切换功能，切换事件监听等，需要依赖element模块
+        var layer = layui.layer;
+        var active = {
+            //在这里给active绑定事件，后面可通过active调用这些事件
+            tabDeleteAll: function (ids) {//删除所有
+                $.each(ids, function (i, item) {
+                    element.tabDelete("xbs_tab", item);//ids是一个数组，里面存放了多个id，调用tabDelete方法分别删除
+                })
+            }
+        };
+
+        $(".close-all").click(function () {
+            if ($(this).attr("data-type") == "closeall") {
+                var tabtitle = $(".layui-tab-title li");
+                var ids = new Array();
+                $.each(tabtitle, function (i) {
+                    ids[i] = $(this).attr("lay-id");
+                });
+                active.tabDeleteAll(ids);
+            }
+
+        })
+    });
+</script>

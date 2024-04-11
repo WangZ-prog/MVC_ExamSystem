@@ -1,0 +1,91 @@
+﻿@using ExamSystem.Models.TableModel
+@model List<ExamPaper>
+@{
+    ViewBag.Title = "试卷中心";
+    Layout = "~/Views/Shared/_LayoutOtherMaster.cshtml";
+}
+<div class="x-nav">
+    <span class="layui-breadcrumb">
+        <a href="">后台首页</a>
+        <a href="">试卷中心</a>
+    </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="Keys" placeholder="请输入关键字(卷名)" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="width: 104%; min-height: 50%; display: flex; flex-wrap: wrap;">
+    @foreach (ExamPaper examPaper in Model)
+    {
+        string ismake = examPaper.isMake.ToString();
+        string id = examPaper.id.ToString();
+        <div class="layui-bg-gray" style="height: 135px ;">
+            <div class="layui-row layui-col-space15" style="position:relative;">
+                <div class="layui-col-md6">
+                    <div class="layui-panel" style="padding: 10px 4px 3px 4px;">
+                        <div style="font-size: 20px; margin-top: 12px; width: 330px; margin-bottom: 10px;">@examPaper.examName</div>
+                        <div><span class="layui-badge-dot"></span> <span class="layui-badge-rim" style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">单选题数</span> @examPaper.SinglePNum</div>
+                        <div><span class="layui-badge-dot layui-bg-orange"></span> <span class="layui-badge-rim" style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">判断题数</span> @examPaper.JudgePNum</div>
+                        <div><span class="layui-badge-dot layui-bg-green"></span> <span class="layui-badge-rim" style="background-color: rgb(163 171 180); border-color: rgb(129 126 133); color: black;">填空题数</span> @examPaper.FillPNum</div>
+                    </div>
+                </div>
+                <div class="layui-btn-container" style="position:absolute; right:10px;bottom:30px;">
+                    @if (ismake == "1")
+                    {
+                        <button type="button" class="layui-btn layui-btn-disabled" style=" background-color: #c5c4c4; border-radius: 4px; color: #575151; border-color: #858585;">已经组卷</button>
+                        <button type="button" class="layui-btn layui-btn-warm" style="background-color: #ffb800; border-radius: 4px; border-color: #eee1e1; " onclick="window.location.href='/ExamPaper/ScanExamPaper?id=@id'">查看试卷</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="layui-btn" style="background-color: #1e9fff; border-radius: 4px; border-color: #2474ce;" onclick="make_exam(this, '@id')" >开始组卷</button>
+                        <button type="button" class="layui-btn layui-btn-disabled" style=" background-color: #2e2c2c; border-radius: 4px; border-color: #574848;">空的试卷</button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    /*组卷*/
+    function make_exam(obj, id) {
+        layer.confirm('确定现在组卷？', function (index) {
+            //发送请求get
+            $.ajax({
+                url: '/ExamPaper/MakeUpExam?id=' + id,
+                type: 'get',
+                data: index.filed,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.ResultType == 1) {
+                        layer.alert(data.Msg, { icon: 6 }, function () {
+                            location.reload();
+                        });
+                    }
+                    else if (data.ResultType == 3) {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                    else {
+                        layer.alert(data.Msg, { icon: 2 });
+                    }
+                },
+            });
+        });
+    }
+</script>
